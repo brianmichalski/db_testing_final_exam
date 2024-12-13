@@ -23,7 +23,7 @@ export class BrandApi {
   }
 
   // Get all brands
-  private async getAllBrands(req: Request, res: Response) {
+  public async getAllBrands(req: Request, res: Response) {
     try {
       const brands = await this.#dataSource.getRepository(Brand).find();
       res.json(brands);
@@ -34,7 +34,7 @@ export class BrandApi {
   }
 
   // Get brand by ID
-  private async getBrandById(req: Request, res: Response) {
+  public async getBrandById(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid brand ID" });
@@ -55,7 +55,7 @@ export class BrandApi {
   }
 
   // Create a new brand
-  private async createBrand(req: Request, res: Response) {
+  public async createBrand(req: Request, res: Response) {
     const { name } = req.body;
     if (!name) {
       return res.status(400).json({ error: "Brand name is required" });
@@ -63,8 +63,9 @@ export class BrandApi {
     try {
       const brand = new Brand();
       brand.name = name;
-      await this.#dataSource.getRepository(Brand).save(brand);
-      res.status(201).json(brand);
+      
+      const result = await this.#dataSource.getRepository(Brand).save(brand);
+      res.status(201).json(result);
     } catch (error) {
       console.error("Error creating brand:", error);
       res.status(500).json({ error: "Error creating brand" });
@@ -72,7 +73,7 @@ export class BrandApi {
   }
 
   // Update a brand
-  private async updateBrand(req: Request, res: Response) {
+  public async updateBrand(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid brand ID" });
@@ -93,7 +94,7 @@ export class BrandApi {
   }
 
   // Delete a brand
-  private async deleteBrand(req: Request, res: Response) {
+  public async deleteBrand(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid brand ID" });
