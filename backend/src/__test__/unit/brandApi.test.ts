@@ -1,7 +1,6 @@
-// Import necessary modules
 import { Request, Response } from "express";
 import { DataSource, Repository } from "typeorm";
-import { BrandApi } from "../api";
+import { BrandApi } from "../../api";
 
 // Mock dependencies
 export const createMockRepository = <T = any>(): jest.Mocked<Repository<T>> => ({

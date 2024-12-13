@@ -14,7 +14,7 @@ export class EmployeeApi {
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {
+  public initializeRoutes() {
     this.#express.get("/employee", this.getAllEmployees.bind(this));
     this.#express.get("/employee/:id", this.getEmployeeById.bind(this));
     this.#express.post("/employee", this.createEmployee.bind(this));
@@ -23,7 +23,7 @@ export class EmployeeApi {
   }
 
   // Get all employees
-  private async getAllEmployees(req: Request, res: Response) {
+  public async getAllEmployees(req: Request, res: Response) {
     try {
       const employees = await this.#dataSource.getRepository(Employee).find();
       res.json(employees);
@@ -34,7 +34,7 @@ export class EmployeeApi {
   }
 
   // Get employee by ID
-  private async getEmployeeById(req: Request, res: Response) {
+  public async getEmployeeById(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid employee ID" });
@@ -55,7 +55,7 @@ export class EmployeeApi {
   }
 
   // Create a new employee
-  private async createEmployee(req: Request, res: Response) {
+  public async createEmployee(req: Request, res: Response) {
     let { role, name, surname, seniorityLevel, driverCategory } = req.body;
     if (!role || !name || !surname || !seniorityLevel) {
       return res.status(400).json({ error: "Role, name, surname, and seniorityLevel are required" });
@@ -64,7 +64,7 @@ export class EmployeeApi {
     if (!rolesAccepted.includes(role)) {
       return res.status(400).json({ error: "Role must be 'Driver' or 'Mechanic'" });
     }
-    
+
     seniorityLevel = seniorityLevel.toLowerCase();
     const senioritiesAccepted = ['entry', 'mid', 'senior'];
     if (!senioritiesAccepted.includes(seniorityLevel)) {
@@ -77,13 +77,14 @@ export class EmployeeApi {
       employee.surname = surname;
       employee.seniorityLevel = seniorityLevel;
 
+      let result: Employee;
       if (employee.role === 'Driver') {
         (employee as Driver).driverCategory = driverCategory || undefined;
-        await this.#dataSource.getRepository(Driver).save(employee);
+        result = await this.#dataSource.getRepository(Driver).save(employee);
       } else {
-        await this.#dataSource.getRepository(Mechanic).save(employee);
+        result = await this.#dataSource.getRepository(Mechanic).save(employee);
       }
-      res.status(201).json(employee);
+      res.status(201).json(result);
     } catch (error) {
       console.error("Error creating employee:", error);
       res.status(500).json({ error: "Error creating employee" });
@@ -91,7 +92,7 @@ export class EmployeeApi {
   }
 
   // Update an existing employee
-  private async updateEmployee(req: Request, res: Response) {
+  public async updateEmployee(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid employee ID" });
@@ -106,13 +107,15 @@ export class EmployeeApi {
       employee.name = name || employee.name;
       employee.surname = surname || employee.surname;
       employee.seniorityLevel = seniorityLevel || employee.seniorityLevel;
+
+      let result: Employee;
       if (employee.role === 'Driver') {
         (employee as Driver).driverCategory = driverCategory || (employee as Driver).driverCategory;
-        await this.#dataSource.getRepository(Driver).save(employee);
+        result = await this.#dataSource.getRepository(Driver).save(employee);
       } else {
-        await this.#dataSource.getRepository(Mechanic).save(employee);
+        result = await this.#dataSource.getRepository(Mechanic).save(employee);
       }
-      res.json(employee);
+      res.json(result);
     } catch (error) {
       console.error("Error updating employee:", error);
       res.status(500).json({ error: "Error updating employee" });
@@ -120,7 +123,7 @@ export class EmployeeApi {
   }
 
   // Delete an employee
-  private async deleteEmployee(req: Request, res: Response) {
+  public async deleteEmployee(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid employee ID" });
