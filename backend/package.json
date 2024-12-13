@@ -1,0 +1,29 @@
+{
+  "name": "final_exam",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "nodemon --exec ts-node src/server.ts",
+    "audit": "npm audit --audit-level=moderate",
+    "build": "tsc",
+    "lint": "eslint --max-warnings 0 .",
+    "test": "jest"
+  },
+  "author": "Group 6",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "~5.0.0",
+    "final_exam": "file:",
+    "jest": "^29.7.0",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20"
+  }
+}
