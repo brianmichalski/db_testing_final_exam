@@ -27,6 +27,6 @@ export class Truck {
   @Column()
   year!: number;
 
-  @Column()
+  @Column({ default: 0 })
   numberOfRepairs!: number;
 }
