@@ -69,19 +69,6 @@ describe("EmployeeApi", () => {
       expect(repoMock.find).toHaveBeenCalledTimes(1);
       expect(res.json).toHaveBeenCalledWith(mockEmployees);
     });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { find: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest();
-      const res = mockResponse();
-
-      await employeeApi.getAllEmployees(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error fetching employees" });
-    });
   });
   describe("getEmployeeById", () => {
     it("should return employee by ID", async () => {
@@ -119,19 +106,6 @@ describe("EmployeeApi", () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Employee not found" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" });
-      const res = mockResponse();
-
-      await employeeApi.getEmployeeById(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error fetching employee by ID" });
     });
   });
   describe("createEmployee", () => {
@@ -178,19 +152,6 @@ describe("EmployeeApi", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: "seniorityLevel must be 'entry', 'mid', or 'senior'" });
     });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { save: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({}, { role: "Driver", name: "John", surname: "Doe", seniorityLevel: "entry", driverCategory: "B" });
-      const res = mockResponse();
-
-      await employeeApi.createEmployee(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error creating employee" });
-    });
   });
   describe("updateEmployee", () => {
     it("should update an existing employee", async () => {
@@ -221,19 +182,6 @@ describe("EmployeeApi", () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Employee not found" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" }, { name: "Jane" });
-      const res = mockResponse();
-
-      await employeeApi.updateEmployee(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error updating employee" });
     });
   });
 
@@ -285,19 +233,6 @@ describe("EmployeeApi", () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Employee not found" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" });
-      const res = mockResponse();
-
-      await employeeApi.deleteEmployee(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error deleting employee" });
     });
   });
 

@@ -14,7 +14,7 @@ export class RepairApi {
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {
+  public initializeRoutes() {
     this.#express.get("/repair", this.getAllRepairs.bind(this));
     this.#express.get("/repair/:id", this.getRepairById.bind(this));
     this.#express.post("/repair", this.createRepair.bind(this));
@@ -23,7 +23,7 @@ export class RepairApi {
   }
 
   // Get all repairs
-  private async getAllRepairs(req: Request, res: Response) {
+  public async getAllRepairs(req: Request, res: Response) {
     try {
       const repairs = await this.#dataSource.getRepository(Repair).find({
         relations: ["truck", "mechanic"], // Include related truck and mechanic details
@@ -36,7 +36,7 @@ export class RepairApi {
   }
 
   // Get a repair by ID
-  private async getRepairById(req: Request, res: Response) {
+  public async getRepairById(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid repair ID" });
@@ -57,7 +57,7 @@ export class RepairApi {
   }
 
   // Create a new repair
-  private async createRepair(req: Request, res: Response) {
+  public async createRepair(req: Request, res: Response) {
     const { truckId, mechanicId, orderDate, daysToRepair } = req.body;
 
     if (!truckId || !mechanicId || !orderDate || !daysToRepair) {
@@ -79,13 +79,13 @@ export class RepairApi {
       repair.daysToRepair = daysToRepair;
 
       // Update the number of repairs of the truck
-      await this.#dataSource.getTreeRepository(Truck).update(
+      await this.#dataSource.getRepository(Truck).update(
         repair.truck.id,
         { numberOfRepairs: ++repair.truck.numberOfRepairs }
       );
 
-      await this.#dataSource.getRepository(Repair).save(repair);
-      res.status(201).json(repair);
+      let result = await this.#dataSource.getRepository(Repair).save(repair);
+      res.status(201).json(result);
     } catch (error) {
       console.error("Error creating repair:", error);
       res.status(500).json({ error: "Error creating repair" });
@@ -93,7 +93,7 @@ export class RepairApi {
   }
 
   // Update an existing repair
-  private async updateRepair(req: Request, res: Response) {
+  public async updateRepair(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid repair ID" });
@@ -133,7 +133,7 @@ export class RepairApi {
   }
 
   // Delete a repair
-  private async deleteRepair(req: Request, res: Response) {
+  public async deleteRepair(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid repair ID" });

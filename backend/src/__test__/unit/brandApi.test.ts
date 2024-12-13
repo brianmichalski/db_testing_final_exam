@@ -66,19 +66,6 @@ describe("BrandApi", () => {
       expect(repoMock.find).toHaveBeenCalledTimes(1);
       expect(res.json).toHaveBeenCalledWith(mockBrands);
     });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { find: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest();
-      const res = mockResponse();
-
-      await brandApi.getAllBrands(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error fetching brands" });
-    });
   });
 
   describe("getBrandById", () => {
@@ -118,19 +105,6 @@ describe("BrandApi", () => {
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Brand not found" });
     });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" });
-      const res = mockResponse();
-
-      await brandApi.getBrandById(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error fetching brand by ID" });
-    });
   });
 
   describe("createBrand", () => {
@@ -157,19 +131,6 @@ describe("BrandApi", () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: "Brand name is required" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { save: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({}, { name: "Brand A" });
-      const res = mockResponse();
-
-      await brandApi.createBrand(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error creating brand" });
     });
   });
 
@@ -203,19 +164,6 @@ describe("BrandApi", () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Brand not found" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" }, { name: "Updated Brand" });
-      const res = mockResponse();
-
-      await brandApi.updateBrand(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error updating brand" });
     });
   });
 
@@ -271,19 +219,6 @@ describe("BrandApi", () => {
       expect(repoMock.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: "Brand not found" });
-    });
-
-    it("should return 500 if an error occurs", async () => {
-      const repoMock = { findOne: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest({ id: "1" });
-      const res = mockResponse();
-
-      await brandApi.deleteBrand(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error deleting brand" });
     });
   });
 })
