@@ -210,6 +210,7 @@ describe("RepairApi", () => {
         const mockRepair = { id: 1, truck: { id: 1, model: "Truck A" }, mechanic: { id: 1, name: "Mechanic A" }, orderDate: new Date(), daysToRepair: 5 };
         const repoMock = {
           findOne: jest.fn().mockResolvedValue(mockRepair),
+          update: jest.fn().mockResolvedValue(undefined),
           remove: jest.fn().mockResolvedValue(undefined)
         };
         (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);

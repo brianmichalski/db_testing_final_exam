@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { Mechanic } from "../entity";
 import { Repair } from "../entity/repair";
 import { Truck } from "../entity/truck";
+import { relative } from "path";
 
 export class RepairApi {
   #dataSource: DataSource;
@@ -140,12 +141,22 @@ export class RepairApi {
     }
 
     try {
-      const repair = await this.#dataSource.getRepository(Repair).findOne({ where: { id } });
+      const repair = await this.#dataSource.getRepository(Repair).findOne({ 
+        where: { id },
+        relations: ["truck"]
+      });
       if (!repair) {
         return res.status(404).json({ error: "Repair not found" });
       }
 
+      // Update the number of repairs of the truck
+      await this.#dataSource.getRepository(Truck).update(
+        repair.truck.id,
+        { numberOfRepairs: --repair.truck.numberOfRepairs }
+      );
+
       await this.#dataSource.getRepository(Repair).remove(repair);
+
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting repair:", error);
