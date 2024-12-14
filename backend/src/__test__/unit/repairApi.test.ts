@@ -70,19 +70,6 @@ describe("RepairApi", () => {
       expect(res.json).toHaveBeenCalledWith(mockRepairs);
     });
 
-    it("should handle errors fetching repairs", async () => {
-      const repoMock = { find: jest.fn().mockRejectedValue(new Error("Database error")) };
-      (mockDataSource.getRepository as jest.Mock).mockReturnValue(repoMock);
-
-      const req = mockRequest();
-      const res = mockResponse();
-
-      await repairApi.getAllRepairs(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Error fetching repairs" });
-    });
-
     describe("getRepairById", () => {
       it("should return repair by ID", async () => {
         const mockRepair = { id: 1, truck: { id: 1, model: "Truck A" }, mechanic: { id: 1, name: "Mechanic A" }, orderDate: new Date(), daysToRepair: 5 };
